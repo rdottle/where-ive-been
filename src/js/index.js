@@ -14,6 +14,3 @@ const mapContainer = d3.select("#map");
 
 let newMap = new Map();
 
-
-
-handleClientLoad();
