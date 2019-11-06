@@ -97,7 +97,7 @@ class Map {
 			.attr("cx",  (d) => { return this.projection([d.long,d.lat])[0] })
 			.attr("cy",  (d) => { return this.projection([d.long,d.lat])[1] })
 			.attr("r", "0px")
-			.style("fill", "rgba(253, 45, 215)")
+			.style("fill", "#d32f95")
 			.style("stroke", "#fff")
 
 			.style("opacity", "1")		
