@@ -12,7 +12,7 @@ class Map {
     	this.countries = topojson.feature(world, world.objects.countries)
     	this.graticule = d3.geoGraticule10();
     	this.outline = ({type: "Sphere"});
-    	this.height = window.innerHeight - 200;
+    	this.height = window.innerHeight - 100;
     	this.width = window.innerWidth;
 		this.margin = {top: 0, right: 0, bottom: 0, left: 0};
 		this.cat = "https://img.icons8.com/pastel-glyph/50/000000/cat--v3.png";
