@@ -75,6 +75,7 @@ class Map {
 	    .enter().append("path")
 	      .attr("d", this.path)
 	      .style("fill", "#fff")
+	      .style("opacity", "0.75")
 	      .style("stroke", "#cdcdcd")
 	 
 	  this.g.append("g")
@@ -96,7 +97,9 @@ class Map {
 			.attr("cx",  (d) => { return this.projection([d.long,d.lat])[0] })
 			.attr("cy",  (d) => { return this.projection([d.long,d.lat])[1] })
 			.attr("r", "0px")
-			.style("fill", "#d41367")
+			.style("fill", "rgba(253, 45, 215)")
+			.style("stroke", "#fff")
+
 			.style("opacity", "1")		
 			.transition()
 			.ease(d3.easeBounce)
