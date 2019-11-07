@@ -15,9 +15,9 @@ class Map {
     	this.height = window.innerHeight - 100;
     	this.width = window.innerWidth;
 		this.margin = {top: 0, right: 0, bottom: 0, left: 0};
-		this.cat = "https://img.icons8.com/pastel-glyph/50/000000/cat--v3.png";
+		this.cat = "https://img.icons8.com/pastel-glyph/50/2352af/cat--v3.png";
 		this.centered;
-
+		this.firstClick;
 		this.svg = d3.select("#map")
             .append("svg")
             .attr("width", this.width)
@@ -42,21 +42,6 @@ class Map {
 
 
 		this.g
-		//.on("wheel.zoom",() => {
-		//         var currScale = this.projection.scale();
-		//         var newScale = currScale - 2*event.deltaY;
-		//         var currTranslate = this.projection.translate();
-		//         var coords = this.projection.invert([event.offsetX, event.offsetY]);
-		//         this.projection.scale(newScale);
-		//         var newPos = this.projection(coords);
-		//         this.projection.translate([currTranslate[0] + (event.offsetX - newPos[0]), currTranslate[1] + (event.offsetY - newPos[1])]);
-		//         this.g.selectAll("path").attr("d", this.path);
-		//         this.g.selectAll("circle")
-		//         	.attr("cx",  (d) => { return this.projection([d.long,d.lat])[0] })
-		// 			.attr("cy",  (d) => { return this.projection([d.long,d.lat])[1] })
-		// 		this.g.selectAll("image").attr("d", this.path).attr("transform", (d)=> { return "translate(" + this.projection([d.long,d.lat]) + ")"; })
-
-		//     })
 		    .call(d3.drag().on("drag", () => {
 		    	d3.select(".countries").selectAll("text").remove();
 
@@ -67,8 +52,7 @@ class Map {
 		        this.g.selectAll("circle").attr("cx",  (d) => { return this.projection([d.long,d.lat])[0] })
 					.attr("cy",  (d) => { return this.projection([d.long,d.lat])[1] })
 				this.g.selectAll("image").attr("d", this.path).attr("transform", (d)=> { return "translate(" + this.projection([d.long,d.lat]) + ")"; })
-
-
+		    
 		    }));
 
 		 this.g.selectAll("path")
@@ -76,7 +60,7 @@ class Map {
 		    .enter().append("path")
 		      .attr("d", this.path)
 		      .style("fill", "#ffffff")
-		      .style("fill-opacity", "0.15")
+		      .style("fill-opacity", "0.35")
 		      .style("stroke", "#d32f95")
 		      // .on("click",this.clickedPath)
 		 
@@ -96,15 +80,10 @@ class Map {
 			.on("click",this.clickedCircle)
 
 			.attr("class", d => {
-				console.log(d.person)
 				return d.person == "Sashi" ? "sashi" : "rachael"})
 			.attr("cx",  (d) => { return this.projection([d.long,d.lat])[0] })
 			.attr("cy",  (d) => { return this.projection([d.long,d.lat])[1] })
 			.attr("r", "0px")
-			.style("fill", "#d32f95")
-			.style("stroke", "#fff")
-
-			.style("opacity", "1")		
 			.transition()
 			.ease(d3.easeBounce)
 			.duration(2000)
@@ -122,14 +101,19 @@ class Map {
 	        .attr("height", 20)
 	        .attr("width", 20)
 	        // .on("click",this.clickedPath);
+
+
+	    this.svg.append("g").attr("class", "zoom-button")
 		}
 
 
 	clickedCircle(d, i, els) {
 
-		console.log(d)
+			let selected = d3.select(els[i]);
+			selected.classed("clicked", true);
+			d3.selectAll("circle:not(." + "clicked" + ")").classed("hide", true);
 
-	  	var x, y, k;
+	  		var x, y, k;
 			this.height = window.innerHeight - 100;
     		this.width = window.innerWidth;
 			
@@ -139,19 +123,19 @@ class Map {
 
 			this.path = d3.geoPath().projection(this.projection);
 	
-		  if (d && this.centered !== d) {
+		  if (d && this.centered !== d ) {
+
+			d3.select(".countries").append("text").attr("class", "circle-label")
+			.attr("x", d3.event.pageX)
+			.attr("y", d3.event.pageY)
+			.text(d.city)
+			
 		    // var centroid = this.path.centroid(d);
-			x = this.projection([d.long,d.lat])[0];
-		    y = this.projection([d.long,d.lat])[1]; 
+			x = d3.event.pageX;
+		    y = d3.event.pageY; 
 
 		    k = 4;
 		    this.centered = d;
-		  	d3.select(".countries").selectAll("text").remove();
-
-			d3.select(".countries").append("text")
-				.attr("x", this.projection([d.long,d.lat])[0] + 10)
-				.attr("y", this.projection([d.long,d.lat])[1])
-				.text(d.city)
 
 		  	d3.selectAll("image").attr('r', 1/k).attr("height", 20/k).attr("width", 20/k)
 			// .attr("transform", (d)=> { return "translate(" + this.projection([d.long,d.lat]) + ")"; })
@@ -161,27 +145,32 @@ class Map {
 	      	d3.selectAll("circle")
 				.attr("r", 3);
 
-		  } else {
+			d3.select(".countries").transition()
+		      .duration(750)
+		      .attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+		      .style("stroke-width", 1/ k + "px"); 	
 
-		  	d3.select(".countries").selectAll("text").remove();
+		  } else {
+		  	d3.selectAll("circle").classed("clicked", false);
+		  	d3.selectAll("circle").classed("hide", false);
+		  	d3.selectAll("text").remove()
 		    x = this.width / 2;
 		    y = this.height / 2;
 		    k = 1;
 		    this.centered = null;
 
 		    d3.selectAll("image").attr('r', 1/k).attr("height", 20/k).attr("width", 20/k)
-				// .attr("transform", (d)=> { return "translate(" + this.projection([d.long,d.lat]) + ")"; })
 		        .attr("x", (d) => { return -25;})
 		        .attr("y", (d) => { return -25;})
 		    d3.selectAll("circle")
 				.attr("r", 5);
+
+			d3.select(".countries").transition()
+		      .duration(750)
+		      .attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+		      .style("stroke-width", 1/ k + "px"); 	
+
 		  }
-
-	d3.select(".countries").transition()
-      .duration(750)
-      .attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
-      .style("stroke-width", 1/ k + "px"); 	
-
 
 	}
 
