@@ -19,11 +19,24 @@ $plex: 'IBM Plex Sans', sans-serif;
 	bottom: 0;
 }
 
+main {
+	height: 100%;
+}
+
+
+#map {
+	height: 100%;
+}
+
+#outro {
+	position: sticky;
+	bottom: 0;
+}
 body {
 	height: 110vh;
-  background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(253,45,215,0.6713060224089635) 100%);
-  visibility: visible !important;
-  font-family: $plex;
+    background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(253,45,215,0.6713060224089635) 100%);
+    visibility: visible !important;
+    font-family: $plex;
 	.container-main {
 		margin: auto;
 		width: 50%;

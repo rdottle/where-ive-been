@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import { queue } from "d3-queue";
 import { geoAugust } from "d3-geo-projection";
+import * as fish from 'd3-fisheye';
 
 const topojson = require("topojson-client");
 const world = require("./../../data/countries_110.json");
@@ -8,6 +9,10 @@ const whereBeen = require("./../../data/where.json");
 class Map {
     
     constructor(opts) {
+    	this.fisheye = fish.radial()
+			  .radius(250)
+			  .distortion(4)
+			  .smoothing(0.5);
     	this.land = topojson.feature(world, world.objects.land)
     	this.countries = topojson.feature(world, world.objects.countries)
     	this.graticule = d3.geoGraticule10();
@@ -25,6 +30,7 @@ class Map {
             .style("overflow", "visible")
             .append('g')
             .attr('class', 'map')
+		
 
 
 		this.projection = geoAugust()
@@ -36,6 +42,7 @@ class Map {
 	}
 
 	ready() {
+
 
 	  this.g = this.svg.append("g")
 	      .attr("class", "countries");
@@ -55,6 +62,7 @@ class Map {
 		    
 		    }));
 
+
 		 this.g.selectAll("path")
 		      .data(this.countries.features)
 		    .enter().append("path")
@@ -69,6 +77,7 @@ class Map {
 		    .selectAll("path")
 		      .data(this.land.features)
 		    .enter().append("path")
+		      .attr("class", "path-all")
 		      .attr("d", this.path)
 		      .style("fill", "none")
 		      .style("stroke", "#d32f95")
@@ -104,6 +113,42 @@ class Map {
 
 
 	    this.svg.append("g").attr("class", "zoom-button")
+
+	 //    this.g.on("mousemove", (e) => {
+		// 	const mouse = d3.mouse(d3.event.target);
+		// 	console.log(mouse)
+		// 	this.fisheye.focus(mouse);
+		// 	d3.selectAll("circle").each(d => {
+	 //          d.fisheye = this.fisheye([d.x, d.y]);
+	 //        })
+	 //        .attr('cx', (d) => {
+	 //          if (mouse[0] > 500) {
+	 //            return d.fisheye.x;
+	 //          } else {
+	 //            return d.fisheye[0];
+	 //          }
+	 //        })
+	 //        .attr('cy', (d) => {
+	 //          if (mouse[0] > 500) {
+	 //            return d.fisheye.y;
+	 //          } else {
+	 //            return d.fisheye[1];
+	 //          }
+	 //        });
+
+	 //        const thing = this.path;
+	 //        const fish = this.fisheye
+	 //        d3.selectAll(".path-all").attr('d', function(d) {
+	        
+		//         return thing(
+		//           d.geometry.coordinates.map(tuple => {
+		//               return fish(tuple);
+		//           })
+		//         );
+		//       });
+		// });
+
+
 		}
 
 
